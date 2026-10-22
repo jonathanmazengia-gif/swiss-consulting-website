@@ -277,15 +277,125 @@
 
     <!-- CONTACT SECTION -->
 
-    <section id="contact">
+   
+<!-- CONTACT SECTION -->
 
-      <h2>Contact Us</h2>
+<section id="contact" class="contact-section">
+
+  <div class="contact-grid">
+
+    <div class="contact-content">
+
+      <span class="eyebrow">GET IN TOUCH</span>
+
+      <h2>Let's discuss your next project.</h2>
 
       <p>
-        Contact form coming soon.
+        Tell us about your business and what
+        you're looking to achieve.
       </p>
 
-    </section>
+      <p>
+  This website is a fictional portfolio
+  demonstration. The form is not accepting
+  real inquiries yet.
+</p>
+
+    </div>
+
+    <form
+      class="contact-form"
+      id="contact-form"
+      action="https://formspree.io/f/xbggrwdy"
+      method="POST"
+    >
+
+      <div class="form-group">
+        <label for="fullname">Full Name *</label>
+
+        <input
+          type="text"
+          id="fullname"
+          name="name"
+          placeholder="Your full name"
+          autocomplete="name"
+          maxlength="100"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="service">Service *</label>
+
+        <select
+          id="service"
+          name="service"
+          required
+        >
+          <option value="">
+            Select a service
+          </option>
+
+          <option value="business-strategy">
+            Business Strategy
+          </option>
+
+          <option value="financial-analysis">
+            Financial Analysis
+          </option>
+
+          <option value="growth-advisory">
+            Growth Advisory
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Your Message *</label>
+
+        <textarea
+          id="message"
+          name="message"
+          rows="5"
+          maxlength="3000"
+          placeholder="Tell us about your project..."
+          required
+        ></textarea>
+      </div>
+
+      <!-- Formspree handles contact form submissions -->
+
+<button
+  type="submit"
+  class="form-submit"
+>
+  Send Inquiry
+</button>
+
+      <p class="form-note">
+  Demo form — submissions are processed by
+  Formspree. Please use test information only.
+</p>
+
+    </form>
+
+  </div>
+
+</section>
+
 
   </main>
 
