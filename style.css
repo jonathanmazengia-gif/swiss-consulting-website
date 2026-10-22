@@ -101,3 +101,105 @@ footer {
     padding: 45px 6%;
   }
 }
+
+/* Professional services section */
+
+.services-section {
+  background: #ffffff;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  color: #b39463;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.section-heading h2 {
+  font-size: clamp(30px, 4vw, 44px);
+  margin: 12px 0;
+}
+
+.section-heading p {
+  color: #647083;
+  font-size: 17px;
+}
+
+/* Services card layout */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-card {
+  background: #f7f6f2;
+  padding: 36px;
+  border: 1px solid #e8e6e1;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-number {
+  color: #b39463;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.service-card h3 {
+  font-size: 23px;
+  margin-top: 24px;
+}
+
+.service-card p {
+  color: #647083;
+  font-size: 16px;
+}
+
+/* Tablet layout */
+
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile layout */
+
+@media (max-width: 600px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card {
+    padding: 28px;
+  }
+
+  .section-heading {
+    margin-bottom: 32px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    transition: none;
+  }
+
+  .service-card:hover {
+    transform: none;
+  }
+}
