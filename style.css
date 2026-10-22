@@ -578,3 +578,102 @@ a:focus-visible {
     display: none;
   }
 }
+
+
+/* =========================
+   STAGE 5.2: ABOUT SECTION
+   ========================= */
+
+.about-section {
+  background: #f7f6f2;
+  padding: 100px 8%;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-content h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 20px 0 28px;
+}
+
+.about-content p {
+  color: #647083;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.about-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #987544;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.about-link:hover {
+  text-decoration: underline;
+}
+
+.about-highlights {
+  background: white;
+  border: 1px solid #e8e6e1;
+  border-radius: 12px;
+  padding: 36px;
+}
+
+.about-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 20px 0;
+  border-bottom: 1px solid #e8e6e1;
+}
+
+.about-point:last-child {
+  border-bottom: none;
+}
+
+.about-point span {
+  color: #b39463;
+  font-weight: 700;
+}
+
+.about-point h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.about-point p {
+  margin: 0;
+  color: #647083;
+  font-size: 14px;
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 900px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-section {
+    padding: 65px 6%;
+  }
+
+  .about-highlights {
+    padding: 20px;
+  }
+}
