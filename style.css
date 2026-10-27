@@ -803,3 +803,18 @@ a:focus-visible {
     padding: 24px;
   }
 }
+
+/* STAGE 7: ACCESSIBILITY IMPROVEMENTS */
+
+/* Darker gold for text on light backgrounds */
+
+.services-section .eyebrow,
+.about-section .eyebrow,
+.contact-section .eyebrow,
+.card-number,
+.about-point span,
+.card-overline,
+.about-link {
+  color: #78582c;
+}
+
