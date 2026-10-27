@@ -161,6 +161,49 @@ if (fxSection) {
 
   const fxCurrencies = ["EUR", "USD", "GBP"];
 
+// Currency converter elements
+
+const fxAmount = document.querySelector("#fx-amount");
+const fxTarget = document.querySelector("#fx-target");
+const fxResult = document.querySelector("#fx-result");
+
+// Store rates once they have been retrieved
+let latestRates = null;
+
+// Convert CHF to the selected currency
+function updateConversion() {
+
+  if (!latestRates) {
+    fxResult.textContent = "Waiting for exchange rates...";
+    return;
+  }
+
+  const amount = fxAmount.valueAsNumber;
+
+  if (!Number.isFinite(amount) || amount < 0) {
+    fxResult.textContent = "Enter a valid amount.";
+    return;
+  }
+
+  const currency = fxTarget.value;
+  const rate = latestRates[currency];
+
+  // Multiply CHF by the exchange rate
+  const convertedAmount = amount * rate;
+
+  // Display the formatted result
+  fxResult.textContent = new Intl.NumberFormat(
+    "en-CH",
+    {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }
+  ).format(convertedAmount);
+
+}
+
   async function loadExchangeRates() {
 
     fxButton.disabled = true;
@@ -212,6 +255,18 @@ if (fxSection) {
         element.textContent = item.rate.toFixed(4);
 
       });
+      
+// Save the API rates for the converter
+
+latestRates = Object.fromEntries(
+  rates.map(function (item) {
+    return [item.quote, item.rate];
+  })
+);
+
+// Calculate the initial conversion
+updateConversion();
+
 
       // Display the publication date(s)
       const dates = [...new Set(
@@ -242,6 +297,12 @@ if (fxSection) {
 
   // Refresh when the visitor clicks the button
   fxButton.addEventListener("click", loadExchangeRates);
+
+// Recalculate whenever the amount changes
+fxAmount.addEventListener("input", updateConversion);
+
+// Recalculate whenever the currency changes
+fxTarget.addEventListener("change", updateConversion);
 
   // Load data automatically when the page opens
   loadExchangeRates();

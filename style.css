@@ -1122,3 +1122,88 @@ a:focus-visible {
     padding: 20px;
   }
 }
+
+
+/* =========================
+   STAGE 10.2: CURRENCY CONVERTER
+   ========================= */
+
+.fx-converter {
+  background: #f7f6f2;
+  padding: 28px;
+  border: 1px solid #e8e6e1;
+  border-radius: 10px;
+  margin-top: 25px;
+}
+
+.fx-converter h3 {
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+
+.fx-converter > p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.fx-converter-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.fx-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.fx-field input,
+.fx-field select {
+  width: 100%;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #aab4c0;
+  border-radius: 6px;
+  background: white;
+  color: #14243a;
+  font: inherit;
+}
+
+.fx-field input:focus-visible,
+.fx-field select:focus-visible {
+  outline: 3px solid #78582c;
+  outline-offset: 2px;
+}
+
+.fx-result-label {
+  margin: 24px 0 8px;
+  font-weight: 600;
+}
+
+#fx-result {
+  display: block;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 700;
+  color: #14243a;
+}
+
+.fx-converter .fx-converter-note {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 18px;
+}
+
+@media (max-width: 600px) {
+
+  .fx-converter {
+    padding: 18px;
+  }
+
+  .fx-converter-inputs {
+    grid-template-columns: 1fr;
+  }
+
+}
