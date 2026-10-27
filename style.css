@@ -78,9 +78,9 @@ nav {
   font-weight: bold;
 }
 
-/* Other sections */
+/* Services section spacing */
 
-section:not(.hero) {
+.services-section {
   padding: 70px 8%;
 }
 
