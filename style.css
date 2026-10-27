@@ -705,11 +705,13 @@ a:focus-visible {
   margin: 20px 0;
 }
 
+
 .contact-content p {
-  color: #647083;
+  color: #475569;
   line-height: 1.8;
   max-width: 440px;
 }
+
 
 /* Form card */
 
