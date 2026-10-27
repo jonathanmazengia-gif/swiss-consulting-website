@@ -148,3 +148,102 @@ if (yearSelector && chart && chartBars.length === 4) {
   updateDashboard();
 
 }
+
+// STAGE 10: LIVE EXCHANGE RATES
+
+const fxSection = document.querySelector("#fx-rates");
+
+if (fxSection) {
+
+  const fxButton = document.querySelector("#fx-refresh");
+  const fxStatus = document.querySelector("#fx-status");
+  const fxDate = document.querySelector("#fx-date");
+
+  const fxCurrencies = ["EUR", "USD", "GBP"];
+
+  async function loadExchangeRates() {
+
+    fxButton.disabled = true;
+    fxStatus.textContent = "Loading exchange rates...";
+
+    try {
+
+      // Request real data from Frankfurter
+      const response = await fetch(
+        "https://api.frankfurter.dev/v2/rates?base=CHF&quotes=EUR,USD,GBP"
+      );
+
+      // Check that the request succeeded
+      if (!response.ok) {
+        throw new Error("API request failed: " + response.status);
+      }
+
+      // Convert JSON into JavaScript data
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Unexpected API response format");
+      }
+
+      // Find and validate each currency rate
+      const rates = fxCurrencies.map(function (currency) {
+
+        const item = data.find(function (row) {
+          return row.base === "CHF" &&
+                 row.quote === currency &&
+                 Number.isFinite(row.rate) &&
+                 row.rate > 0 &&
+                 typeof row.date === "string";
+        });
+
+        if (!item) {
+          throw new Error("Missing valid rate for " + currency);
+        }
+
+        return item;
+      });
+
+      // Update the exchange-rate cards
+      rates.forEach(function (item) {
+
+        const elementId = "#fx-" + item.quote.toLowerCase();
+        const element = document.querySelector(elementId);
+
+        element.textContent = item.rate.toFixed(4);
+
+      });
+
+      // Display the publication date(s)
+      const dates = [...new Set(
+        rates.map(function (item) {
+          return item.date;
+        })
+      )];
+
+      fxDate.textContent =
+        "Reference date(s): " + dates.join(", ");
+
+      fxStatus.textContent =
+        "Exchange rates loaded successfully.";
+
+    } catch (error) {
+
+      console.error("Exchange rate error:", error);
+
+      fxStatus.textContent =
+        "Unable to load rates. Please try again later.";
+
+    } finally {
+
+      fxButton.disabled = false;
+
+    }
+  }
+
+  // Refresh when the visitor clicks the button
+  fxButton.addEventListener("click", loadExchangeRates);
+
+  // Load data automatically when the page opens
+  loadExchangeRates();
+
+}
