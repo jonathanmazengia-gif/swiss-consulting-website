@@ -1307,3 +1307,25 @@ a:focus-visible {
     width: 100%;
   }
 }
+
+/* Link to separate analytics dashboard */
+
+.analytics-demo-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 14px 22px;
+  background: #14243a;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.analytics-demo-link:hover {
+  background: #254364;
+}
+
+.analytics-demo-link:focus-visible {
+  outline: 3px solid #78582c;
+  outline-offset: 3px;
+}
