@@ -1207,3 +1207,103 @@ a:focus-visible {
   }
 
 }
+
+/* =========================
+   STAGE 10.3: HISTORICAL CHART
+   ========================= */
+
+.fx-history {
+  margin-top: 32px;
+  padding: 28px;
+  background: #f7f6f2;
+  border: 1px solid #e8e6e1;
+  border-radius: 10px;
+}
+
+.fx-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.fx-history-header h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.fx-history-header p,
+.fx-history-note {
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.fx-history-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.fx-history-field select {
+  padding: 12px;
+  border: 1px solid #aab4c0;
+  border-radius: 6px;
+  background: white;
+  color: #14243a;
+  font: inherit;
+}
+
+.fx-history-field select:focus-visible {
+  outline: 3px solid #78582c;
+  outline-offset: 2px;
+}
+
+.fx-chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+#fx-history-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fx-history-dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  color: #475569;
+  font-size: 12px;
+}
+
+#fx-history-summary {
+  font-weight: 600;
+  margin-top: 22px;
+}
+
+#fx-history-status {
+  font-size: 13px;
+  color: #475569;
+}
+
+@media (max-width: 600px) {
+  .fx-history {
+    padding: 16px;
+  }
+
+  .fx-history-header {
+    align-items: flex-start;
+  }
+
+  .fx-history-field,
+  .fx-history-field select {
+    width: 100%;
+  }
+}

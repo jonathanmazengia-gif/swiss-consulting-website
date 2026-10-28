@@ -308,3 +308,172 @@ fxTarget.addEventListener("change", updateConversion);
   loadExchangeRates();
 
 }
+
+// STAGE 10.3: HISTORICAL EXCHANGE RATE CHART
+
+const historyCurrency = document.querySelector("#fx-history-currency");
+const historyChart = document.querySelector("#fx-history-chart");
+const historyStatus = document.querySelector("#fx-history-status");
+const historySummary = document.querySelector("#fx-history-summary");
+const historyStart = document.querySelector("#fx-history-start");
+const historyEnd = document.querySelector("#fx-history-end");
+
+if (historyCurrency && historyChart) {
+
+  let requestNumber = 0;
+
+  async function loadHistoricalRates() {
+
+    const currentRequest = ++requestNumber;
+    const currency = historyCurrency.value;
+
+    historyStatus.textContent = "Loading historical data...";
+    historySummary.textContent = "";
+    historyChart.replaceChildren();
+
+    // Calculate the requested date range
+    const today = new Date();
+    const start = new Date(today);
+
+    start.setUTCDate(start.getUTCDate() - 30);
+
+    const fromDate = start.toISOString().slice(0, 10);
+    const toDate = today.toISOString().slice(0, 10);
+
+    const url =
+      `https://api.frankfurter.dev/v2/rates` +
+      `?from=${fromDate}&to=${toDate}` +
+      `&base=CHF&quotes=${currency}`;
+
+    try {
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Historical API request failed");
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid historical data");
+      }
+
+      // Keep valid observations in date order
+      const points = data.filter(function (item) {
+        return item.base === "CHF" &&
+          item.quote === currency &&
+          typeof item.date === "string" &&
+          Number.isFinite(item.rate) &&
+          item.rate > 0;
+      }).sort(function (a, b) {
+        return a.date.localeCompare(b.date);
+      });
+
+      if (points.length < 2) {
+        throw new Error("Not enough historical observations");
+      }
+
+      // Ignore an older request if the user changed currency
+      if (currentRequest !== requestNumber) return;
+
+      // Determine the range for the chart
+      const values = points.map(point => point.rate);
+
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const spread = Math.max(max - min, 0.0001);
+
+      const lower = min - spread * 0.15;
+      const upper = max + spread * 0.15;
+
+      // Convert rates into SVG coordinates
+      const coordinates = points.map(function (point, index) {
+
+        const x = 40 + index / (points.length - 1) * 600;
+        const y = 230 - (point.rate - lower) /
+          (upper - lower) * 190;
+
+        return [x, y];
+
+      });
+
+      const svgNS = "http://www.w3.org/2000/svg";
+
+      // Draw three horizontal grid lines
+      [40, 135, 230].forEach(function (y) {
+
+        const gridLine = document.createElementNS(svgNS, "line");
+
+        gridLine.setAttribute("x1", "40");
+        gridLine.setAttribute("x2", "640");
+        gridLine.setAttribute("y1", y);
+        gridLine.setAttribute("y2", y);
+        gridLine.setAttribute("stroke", "#e3e7eb");
+
+        historyChart.appendChild(gridLine);
+
+      });
+
+      // Draw the exchange-rate line
+      const line = document.createElementNS(svgNS, "polyline");
+
+      line.setAttribute(
+        "points",
+        coordinates.map(pair => pair.join(",")).join(" ")
+      );
+
+      line.setAttribute("fill", "none");
+      line.setAttribute("stroke", "#78582c");
+      line.setAttribute("stroke-width", "3");
+      line.setAttribute("stroke-linejoin", "round");
+      line.setAttribute("stroke-linecap", "round");
+
+      historyChart.appendChild(line);
+
+      // Display the actual observation dates
+      const first = points[0];
+      const last = points[points.length - 1];
+
+      historyStart.textContent = first.date;
+      historyEnd.textContent = last.date;
+
+      const change = (last.rate / first.rate - 1) * 100;
+
+      historySummary.textContent =
+        `First: ${first.rate.toFixed(4)} ${currency} | ` +
+        `Last: ${last.rate.toFixed(4)} ${currency} | ` +
+        `Change: ${change >= 0 ? "+" : ""}${change.toFixed(2)}%`;
+
+      historyChart.setAttribute(
+        "aria-label",
+        `Historical CHF to ${currency} exchange rates ` +
+        `from ${first.date} to ${last.date}. ` +
+        `First ${first.rate.toFixed(4)}, ` +
+        `last ${last.rate.toFixed(4)}.`
+      );
+
+      historyStatus.textContent =
+        `${points.length} historical observations loaded.`;
+
+    } catch (error) {
+
+      if (currentRequest !== requestNumber) return;
+
+      console.error("Historical chart error:", error);
+
+      historyStatus.textContent =
+        "Unable to load historical rates. Try another currency.";
+
+    }
+  }
+
+  historyCurrency.addEventListener(
+    "change",
+    loadHistoricalRates
+  );
+
+  // Load the chart automatically
+  loadHistoricalRates();
+
+}

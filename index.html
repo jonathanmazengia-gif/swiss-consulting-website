@@ -441,6 +441,57 @@
 
 </div>
 
+<!-- HISTORICAL EXCHANGE RATE CHART -->
+
+<div class="fx-history">
+
+  <div class="fx-history-header">
+    <div>
+      <h3>Historical Exchange Rates</h3>
+      <p>Explore the past 30 days of currency movements.</p>
+    </div>
+
+    <div class="fx-history-field">
+      <label for="fx-history-currency">Currency</label>
+      <select id="fx-history-currency">
+        <option value="EUR">EUR / CHF</option>
+        <option value="USD">USD / CHF</option>
+        <option value="GBP">GBP / CHF</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fx-chart-container">
+    <svg
+      id="fx-history-chart"
+      viewBox="0 0 680 260"
+      role="img"
+      aria-label="Historical exchange rate chart"
+    ></svg>
+  </div>
+
+  <div class="fx-history-dates">
+    <span id="fx-history-start">—</span>
+    <span id="fx-history-end">—</span>
+  </div>
+
+  <p id="fx-history-summary">
+    Waiting for historical data...
+  </p>
+
+  <p id="fx-history-status" role="status">
+    Loading...
+  </p>
+
+  <p class="fx-history-note">
+    Chart shows the value of 1 CHF in the selected
+    currency. Historical reference rates are not
+    live market quotations. The vertical scale
+    adjusts to the observed range.
+  </p>
+
+</div>
+
       <p class="fx-note">
         Source:
         <a href="https://frankfurter.dev/"
