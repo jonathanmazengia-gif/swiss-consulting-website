@@ -107,13 +107,66 @@
 
       </div>
 
-      <h3>Monthly Revenue</h3>
+      
+<!-- DATE FILTERING -->
 
-      <div id="sales-chart"
-           class="analytics-chart"
-           role="img"
-           aria-label="Monthly revenue chart">
-      </div>
+<div class="analytics-filters">
+
+  <h3>Filter Financial Data</h3>
+
+  <div class="filter-controls">
+
+    <div>
+      <label for="sales-from">From month</label>
+      <input type="month" id="sales-from">
+    </div>
+
+    <div>
+      <label for="sales-to">To month</label>
+      <input type="month" id="sales-to">
+    </div>
+
+    <button type="button" id="sales-reset">
+      Reset Filters
+    </button>
+
+  </div>
+
+</div>
+
+<!-- MONTH-OVER-MONTH COMPARISON -->
+
+<div id="sales-comparison"
+     class="analytics-comparison"
+     role="status">
+  Calculating monthly comparisons...
+</div>
+
+<!-- REVENUE AND EXPENSES -->
+
+<h3>Monthly Revenue vs Expenses</h3>
+
+<div class="analytics-legend">
+  <span><i class="legend-revenue"></i> Revenue</span>
+  <span><i class="legend-expenses"></i> Expenses</span>
+</div>
+
+<div id="sales-chart"
+     class="analytics-chart"
+     role="img"
+     aria-label="Monthly revenue and expenses chart">
+</div>
+
+<!-- AUTOMATIC INSIGHTS -->
+
+<div class="analytics-insights">
+
+  <h3>Performance Insights</h3>
+
+  <ul id="sales-insights"></ul>
+
+</div>
+
 
     </section>
 

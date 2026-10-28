@@ -16,6 +16,20 @@ const csvInput = document.querySelector("#sales-csv");
 const analyticsStatus = document.querySelector("#analytics-status");
 const salesChart = document.querySelector("#sales-chart");
 
+// Stage 11.3: Advanced analytics elements
+
+const monthFromInput = document.querySelector("#sales-from");
+const monthToInput = document.querySelector("#sales-to");
+const resetFiltersButton = document.querySelector("#sales-reset");
+
+const salesComparison = document.querySelector("#sales-comparison");
+const salesInsights = document.querySelector("#sales-insights");
+
+// Remember the active dataset
+let currentData = sampleData;
+let datasetName = "fictional sample data";
+
+
 // Format numbers as Swiss francs
 function formatCHF(value) {
   return new Intl.NumberFormat("en-CH", {
@@ -57,9 +71,12 @@ function displayAnalytics(rows) {
   // Clear the existing chart
   salesChart.replaceChildren();
 
-  const maximumRevenue = Math.max(
-    1, ...rows.map(row => row.revenue)
-  );
+  
+const maximumValue = Math.max(
+  1,
+  ...rows.map(row => Math.max(row.revenue, row.expenses))
+);
+
 
   // Create one bar for each month
   rows.forEach(function (row) {
@@ -70,30 +87,52 @@ function displayAnalytics(rows) {
     const track = document.createElement("div");
     track.className = "analytics-bar-track";
 
-    const bar = document.createElement("div");
-    bar.className = "analytics-bar";
+    
+// Revenue bar
+const revenueBar = document.createElement("div");
+revenueBar.className = "analytics-bar";
 
-    bar.style.height =
-      (row.revenue / maximumRevenue * 100) + "%";
+revenueBar.style.height =
+  (row.revenue / maximumValue * 100) + "%";
+
+// Expense bar
+const expenseBar = document.createElement("div");
+expenseBar.className =
+  "analytics-bar analytics-expense-bar";
+
+expenseBar.style.height =
+  (row.expenses / maximumValue * 100) + "%";
+
 
     const label = document.createElement("span");
     label.textContent = row.month;
 
-    const value = document.createElement("span");
-    value.textContent = formatCHF(row.revenue);
+    
+const value = document.createElement("span");
 
-    track.appendChild(bar);
+value.textContent =
+  "R: " + formatCHF(row.revenue) +
+  " | E: " + formatCHF(row.expenses);
+
+track.append(revenueBar, expenseBar);
+
     column.append(track, label, value);
     salesChart.appendChild(column);
 
   });
 
-  salesChart.setAttribute(
-    "aria-label",
-    rows.map(row =>
-      `${row.month}: ${formatCHF(row.revenue)}`
-    ).join("; ")
-  );
+  
+salesChart.setAttribute(
+  "aria-label",
+  rows.map(row =>
+    `${row.month}: revenue ${formatCHF(row.revenue)}, ` +
+    `expenses ${formatCHF(row.expenses)}`
+  ).join("; ")
+);
+
+// Update comparisons and financial insights
+updateAnalyticsInterpretation(rows);
+
 }
 
 // Read a simple, comma-separated CSV
@@ -159,6 +198,182 @@ function parseBusinessCSV(text) {
   );
 }
 
+// STAGE 11.3: FINANCIAL INTERPRETATION
+
+function updateAnalyticsInterpretation(rows) {
+
+  const latest = rows[rows.length - 1];
+  const previous = rows[rows.length - 2];
+
+  // Check whether the last two months are consecutive
+  if (!previous) {
+
+    salesComparison.textContent =
+      "At least two months are needed for a comparison.";
+
+  } else {
+
+    const expectedPrevious = new Date(
+      latest.month + "-01T00:00:00Z"
+    );
+
+    expectedPrevious.setUTCMonth(
+      expectedPrevious.getUTCMonth() - 1
+    );
+
+    const expectedMonth =
+      expectedPrevious.toISOString().slice(0, 7);
+
+    if (previous.month !== expectedMonth) {
+
+      salesComparison.textContent =
+        "The last two selected months are not consecutive. " +
+        "A month-over-month comparison is unavailable.";
+
+    } else {
+
+      const revenueChange =
+        latest.revenue - previous.revenue;
+
+      const expenseChange =
+        latest.expenses - previous.expenses;
+
+      const latestProfit =
+        latest.revenue - latest.expenses;
+
+      const previousProfit =
+        previous.revenue - previous.expenses;
+
+      const profitChange =
+        latestProfit - previousProfit;
+
+      // Convert changes to percentages when possible
+      function percentChange(change, previousValue) {
+
+        if (previousValue === 0) {
+          return "N/A (previous value was zero)";
+        }
+
+        const percentage =
+          change / previousValue * 100;
+
+        return (percentage >= 0 ? "+" : "") +
+          percentage.toFixed(1) + "%";
+      }
+
+      salesComparison.textContent =
+        `Monthly comparison (${previous.month} to ${latest.month}) — ` +
+        `Revenue: ${percentChange(revenueChange, previous.revenue)}. ` +
+        `Expenses: ${percentChange(expenseChange, previous.expenses)}. ` +
+        `Profit change: ${formatCHF(profitChange)}.`;
+    }
+  }
+
+  // Identify highest-revenue month
+  const bestRevenueMonth = rows.reduce(
+    (best, row) =>
+      row.revenue > best.revenue ? row : best
+  );
+
+  // Identify highest-profit month
+  const bestProfitMonth = rows.reduce(
+    (best, row) =>
+      (row.revenue - row.expenses) >
+      (best.revenue - best.expenses) ? row : best
+  );
+
+  const totalRevenue = rows.reduce(
+    (sum, row) => sum + row.revenue, 0
+  );
+
+  const totalExpenses = rows.reduce(
+    (sum, row) => sum + row.expenses, 0
+  );
+
+  const expenseRatio = totalRevenue > 0
+    ? (totalExpenses / totalRevenue * 100).toFixed(1) + "%"
+    : "N/A (zero revenue)";
+
+  // Generate factual financial observations
+  const insights = [
+    `Highest revenue: ${bestRevenueMonth.month} ` +
+    `(${formatCHF(bestRevenueMonth.revenue)}).`,
+
+    `Highest profit: ${bestProfitMonth.month} ` +
+    `(${formatCHF(
+      bestProfitMonth.revenue - bestProfitMonth.expenses
+    )}).`,
+
+    `Expenses represented ${expenseRatio} of revenue ` +
+    `during the selected period.`
+  ];
+
+  // Replace existing insights
+  salesInsights.replaceChildren();
+
+  insights.forEach(function (insight) {
+
+    const item = document.createElement("li");
+    item.textContent = insight;
+    salesInsights.appendChild(item);
+
+  });
+}
+
+
+// STAGE 11.3: DATE FILTERING
+
+function applyMonthFilter() {
+
+  const from = monthFromInput.value;
+  const to = monthToInput.value;
+
+  let message = "";
+
+  if (from && to && from > to) {
+
+    message = "The start month must not be after the end month.";
+
+  } else {
+
+    const filteredRows = currentData.filter(function (row) {
+
+      return (!from || row.month >= from) &&
+             (!to || row.month <= to);
+
+    });
+
+    if (filteredRows.length > 0) {
+
+      displayAnalytics(filteredRows);
+
+      analyticsStatus.textContent =
+        `${datasetName}: showing ${filteredRows.length} ` +
+        `of ${currentData.length} monthly records.`;
+
+      return;
+
+    } else {
+
+      message = "No records match the selected months.";
+
+    }
+  }
+
+  // Clear outdated results if the filter is invalid or empty
+  ["sales-revenue", "sales-expenses",
+   "sales-profit", "sales-margin"].forEach(function (id) {
+
+    document.querySelector("#" + id).textContent = "—";
+
+  });
+
+  salesChart.replaceChildren();
+  salesComparison.textContent = "No comparison available.";
+  salesInsights.replaceChildren();
+  analyticsStatus.textContent = message;
+}
+
 // Read a file selected by the visitor
 csvInput.addEventListener("change", async function () {
 
@@ -175,10 +390,18 @@ csvInput.addEventListener("change", async function () {
     const text = await file.text();
     const rows = parseBusinessCSV(text);
 
-    displayAnalytics(rows);
+    
+// Save the newly imported dataset
+currentData = rows;
+datasetName = file.name;
 
-    analyticsStatus.textContent =
-      `Loaded ${rows.length} records from ${file.name}.`;
+// Reset filters when loading a new file
+monthFromInput.value = "";
+monthToInput.value = "";
+
+// Recalculate the complete dashboard
+applyMonthFilter();
+
 
   } catch (error) {
 
@@ -189,5 +412,26 @@ csvInput.addEventListener("change", async function () {
 
 });
 
+
+// Update when the date filters change
+monthFromInput.addEventListener(
+  "change", applyMonthFilter
+);
+
+monthToInput.addEventListener(
+  "change", applyMonthFilter
+);
+
+// Reset both filters
+resetFiltersButton.addEventListener("click", function () {
+
+  monthFromInput.value = "";
+  monthToInput.value = "";
+
+  applyMonthFilter();
+
+});
+
 // Display fictional data when the page opens
-displayAnalytics(sampleData);
+applyMonthFilter();
+
