@@ -15,7 +15,8 @@ const sampleData = [
 const csvInput = document.querySelector("#sales-csv");
 const analyticsStatus = document.querySelector("#analytics-status");
 const salesChart = document.querySelector("#sales-chart");
-
+const restoreDemoButton =
+  document.querySelector("#restore-demo");
 // Stage 11.3: Advanced analytics elements
 
 const monthFromInput = document.querySelector("#sales-from");
@@ -52,9 +53,11 @@ function displayAnalytics(rows) {
 
   const profit = totalRevenue - totalExpenses;
 
-  const margin = totalRevenue > 0
-    ? profit / totalRevenue * 100
-    : 0;
+  
+const margin = totalRevenue > 0
+  ? profit / totalRevenue * 100
+  : null;
+
 
   document.querySelector("#sales-revenue")
     .textContent = formatCHF(totalRevenue);
@@ -65,8 +68,12 @@ function displayAnalytics(rows) {
   document.querySelector("#sales-profit")
     .textContent = formatCHF(profit);
 
-  document.querySelector("#sales-margin")
-    .textContent = margin.toFixed(1) + "%";
+  
+document.querySelector("#sales-margin")
+  .textContent = margin === null
+    ? "N/A"
+    : margin.toFixed(1) + "%";
+
 
   // Clear the existing chart
   salesChart.replaceChildren();
@@ -428,6 +435,26 @@ resetFiltersButton.addEventListener("click", function () {
   monthFromInput.value = "";
   monthToInput.value = "";
 
+  applyMonthFilter();
+
+});
+
+// STAGE 11.4: RESTORE DEMONSTRATION DATA
+
+restoreDemoButton.addEventListener("click", function () {
+
+  // Restore the original fictional dataset
+  currentData = sampleData;
+  datasetName = "Fictional sample data";
+
+  // Clear the selected CSV file
+  csvInput.value = "";
+
+  // Reset the date filters
+  monthFromInput.value = "";
+  monthToInput.value = "";
+
+  // Recalculate all KPIs, charts and insights
   applyMonthFilter();
 
 });
